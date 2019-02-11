@@ -1,4 +1,6 @@
 
+[![Release](https://img.shields.io/github/release/AndroidDeveloperLB/VideoTrimmer.svg?style=flat)](https://jitpack.io/#AndroidDeveloperLB/VideoTrimmer)
+
 # VideoTrimmer
 
 Allows to trim videos on Android, including UI.
