@@ -39,17 +39,17 @@ import com.lb.video_trimmer_library.utils.BackgroundExecutor
 import com.lb.video_trimmer_library.utils.UiThreadExecutor
 
 open class TimeLineView @JvmOverloads constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int = 0) : View(context, attrs, defStyleAttr) {
-    private var mVideoUri: Uri? = null
+    private var videoUri: Uri? = null
     @Suppress("LeakingThis")
-    private var mHeightView: Int = initHeightView()
-    private var mBitmapList: LongSparseArray<Bitmap>? = null
+    private var heightView: Int = initHeightView()
+    private var bitmapList: LongSparseArray<Bitmap>? = null
 
     open fun initHeightView(): Int = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 40f, context.resources.displayMetrics).toInt().coerceAtLeast(1)
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         val minW = paddingLeft + paddingRight + suggestedMinimumWidth
         val w = View.resolveSizeAndState(minW, widthMeasureSpec, 1)
-        val minH = paddingBottom + paddingTop + mHeightView
+        val minH = paddingBottom + paddingTop + heightView
         val h = View.resolveSizeAndState(minH, heightMeasureSpec, 1)
         setMeasuredDimension(w, h)
     }
@@ -66,11 +66,11 @@ open class TimeLineView @JvmOverloads constructor(context: Context, attrs: Attri
                 try {
                     val thumbnailList = LongSparseArray<Bitmap>()
                     val mediaMetadataRetriever = MediaMetadataRetriever()
-                    mediaMetadataRetriever.setDataSource(context, mVideoUri)
+                    mediaMetadataRetriever.setDataSource(context, videoUri)
                     // Retrieve media data
                     val videoLengthInMs = (Integer.parseInt(mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)) * 1000).toLong()
                     // Set thumbnail properties (Thumbs are squares)
-                    val thumbSize = mHeightView
+                    val thumbSize = heightView
                     val numThumbs = Math.ceil((viewWidth.toFloat() / thumbSize).toDouble()).toInt()
                     val interval = videoLengthInMs / numThumbs
                     for (i in 0 until numThumbs) {
@@ -96,18 +96,18 @@ open class TimeLineView @JvmOverloads constructor(context: Context, attrs: Attri
 
     private fun returnBitmaps(thumbnailList: LongSparseArray<Bitmap>) {
         UiThreadExecutor.runTask("", Runnable {
-            mBitmapList = thumbnailList
+            bitmapList = thumbnailList
             invalidate()
         }, 0L)
     }
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        if (mBitmapList != null) {
+        if (bitmapList != null) {
             canvas.save()
             var x = 0
-            for (i in 0 until mBitmapList!!.size()) {
-                val bitmap = mBitmapList!!.get(i.toLong())
+            for (i in 0 until bitmapList!!.size()) {
+                val bitmap = bitmapList!!.get(i.toLong())
                 if (bitmap != null) {
                     canvas.drawBitmap(bitmap, x.toFloat(), 0f, null)
                     x += bitmap.width
@@ -117,6 +117,6 @@ open class TimeLineView @JvmOverloads constructor(context: Context, attrs: Attri
     }
 
     fun setVideo(data: Uri) {
-        mVideoUri = data
+        videoUri = data
     }
 }

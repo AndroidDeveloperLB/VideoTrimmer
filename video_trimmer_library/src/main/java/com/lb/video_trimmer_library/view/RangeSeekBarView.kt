@@ -56,7 +56,7 @@ open class RangeSeekBarView @JvmOverloads constructor(context: Context, attrs: A
     private val shadowPaint = Paint()
     private val strokePaint = Paint()
     private val edgePaint = Paint()
-    private var currentThumb = 0
+    private var currentThumb = ThumbType.LEFT.index
 
 
     init {
@@ -96,7 +96,7 @@ open class RangeSeekBarView @JvmOverloads constructor(context: Context, attrs: A
     fun initMaxWidth() {
         maxWidth = thumbs[ThumbType.RIGHT.index].pos - thumbs[ThumbType.LEFT.index].pos
         onSeekStop(this, ThumbType.LEFT.index, thumbs[ThumbType.LEFT.index].value)
-        onSeekStop(this, 1, thumbs[1].value)
+        onSeekStop(this, ThumbType.RIGHT.index, thumbs[ThumbType.RIGHT.index].value)
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -143,7 +143,6 @@ open class RangeSeekBarView @JvmOverloads constructor(context: Context, attrs: A
             timeLineHeight.toFloat(),
             strokePaint
         )
-
         //draw edges
         val circleRadius = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 6f, context.resources.displayMetrics)
         canvas.drawCircle(
@@ -223,16 +222,16 @@ open class RangeSeekBarView @JvmOverloads constructor(context: Context, attrs: A
         return false
     }
 
-    private fun checkPositionThumb(mThumbLeft: Thumb, mThumbRight: Thumb, dx: Float, isLeftMove: Boolean) {
+    private fun checkPositionThumb(thumbLeft: Thumb, thumbRight: Thumb, dx: Float, isLeftMove: Boolean) {
         if (isLeftMove && dx < 0) {
-            if (mThumbRight.pos - (mThumbLeft.pos + dx) > maxWidth) {
-                mThumbRight.pos = mThumbLeft.pos + dx + maxWidth
-                setThumbPos(ThumbType.RIGHT.index, mThumbRight.pos)
+            if (thumbRight.pos - (thumbLeft.pos + dx) > maxWidth) {
+                thumbRight.pos = thumbLeft.pos + dx + maxWidth
+                setThumbPos(ThumbType.RIGHT.index, thumbRight.pos)
             }
         } else if (!isLeftMove && dx > 0) {
-            if (mThumbRight.pos + dx - mThumbLeft.pos > maxWidth) {
-                mThumbLeft.pos = mThumbRight.pos + dx - maxWidth
-                setThumbPos(ThumbType.LEFT.index, mThumbLeft.pos)
+            if (thumbRight.pos + dx - thumbLeft.pos > maxWidth) {
+                thumbLeft.pos = thumbRight.pos + dx - maxWidth
+                setThumbPos(ThumbType.LEFT.index, thumbLeft.pos)
             }
         }
     }
