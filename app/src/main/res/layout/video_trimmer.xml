@@ -1,65 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+        xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
     <FrameLayout
-        android:id="@+id/videoViewContainer" android:layout_width="match_parent" android:layout_height="match_parent"
-        android:background="@android:color/black">
+            android:id="@+id/videoViewContainer" android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/black">
 
         <VideoView
-            android:id="@+id/videoView" android:layout_width="match_parent" android:layout_height="match_parent"
-            android:layout_gravity="center" tools:foreground="@tools:sample/backgrounds/scenic"/>
+                android:id="@+id/videoView" android:layout_width="match_parent" android:layout_height="match_parent"
+                android:layout_gravity="center" tools:foreground="@tools:sample/backgrounds/scenic"/>
 
         <ImageView
-            android:id="@+id/playIndicatorView" android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:layout_gravity="center" app:srcCompat="@drawable/icon_video_play"/>
+                android:id="@+id/playIndicatorView" android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center" app:srcCompat="@drawable/icon_video_play"/>
 
     </FrameLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab" android:layout_width="wrap_content" android:layout_height="wrap_content"
-        android:layout_margin="16dp" android:clickable="true" android:focusable="true" app:fabSize="auto"
-        app:layout_constraintBottom_toTopOf="@id/timeTextContainer" app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@android:drawable/ic_menu_crop" tools:ignore="RtlCompat"/>
+            android:id="@+id/fab" android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_margin="16dp" android:clickable="true" android:focusable="true" app:fabSize="auto"
+            app:layout_constraintBottom_toTopOf="@id/timeTextContainer" app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@android:drawable/ic_menu_crop" tools:ignore="RtlCompat"/>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/trimmingContainer" android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:background="#33ffffff" app:layout_constraintBottom_toBottomOf="parent">
+    <View app:layout_constraintTop_toTopOf="@id/timeTextContainer"
+          android:id="@+id/trimmingContainer" android:layout_width="match_parent" android:layout_height="0px"
+          android:background="#33ffffff" app:layout_constraintBottom_toBottomOf="parent"/>
 
-        <com.lb.video_trimmer_library.view.TimeLineView
+    <com.lb.video_trimmer_library.view.TimeLineView
             android:id="@+id/timeLineView" android:layout_width="match_parent" android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent" tools:background="@tools:sample/backgrounds/scenic"/>
+            app:layout_constraintBottom_toBottomOf="parent" tools:background="@tools:sample/backgrounds/scenic"/>
 
-        <com.lb.video_trimmer_library.view.RangeSeekBarView
+    <com.lb.video_trimmer_library.view.RangeSeekBarView
             android:id="@+id/rangeSeekBarView" android:layout_width="match_parent" android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="@id/timeLineView" tools:background="#3300ffff"/>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            app:layout_constraintBottom_toBottomOf="@id/timeLineView" tools:background="#3300ffff"/>
 
     <FrameLayout
-        android:id="@+id/timeTextContainer" android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:visibility="gone" app:layout_constraintBottom_toTopOf="@id/trimmingContainer"
-        tools:visibility="visible">
+            android:id="@+id/timeTextContainer" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:visibility="gone" app:layout_constraintBottom_toTopOf="@id/timeLineView"
+            tools:visibility="visible">
 
         <TextView
-            android:id="@+id/videoFileSizeTextView" android:layout_width="wrap_content"
-            android:layout_height="wrap_content" android:layout_gravity="end" android:textColor="#fff"
-            android:textSize="12sp" tools:ignore="RtlCompat" tools:text="33 MB"/>
+                android:id="@+id/videoFileSizeTextView" android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:layout_gravity="end" android:textColor="#fff"
+                android:textSize="12sp" tools:ignore="RtlCompat" tools:text="33 MB"/>
 
         <TextView
-            android:id="@+id/trimTimeRangeTextView" android:layout_width="wrap_content"
-            android:layout_height="wrap_content" android:layout_gravity="center" android:gravity="center"
-            android:textColor="#fff" android:textSize="12sp" tools:ignore="RtlCompat" tools:text="0:00 .. 1:00"/>
+                android:id="@+id/trimTimeRangeTextView" android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:layout_gravity="center" android:gravity="center"
+                android:textColor="#fff" android:textSize="12sp" tools:ignore="RtlCompat" tools:text="0:00 .. 1:00"/>
 
         <TextView
-            android:id="@+id/playbackTimeTextView" android:layout_width="wrap_content"
-            android:layout_height="wrap_content" android:layout_gravity="start" android:textColor="#fff"
-            android:textSize="12sp" tools:ignore="RtlCompat" tools:text="0:30"/>
+                android:id="@+id/playbackTimeTextView" android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:layout_gravity="start" android:textColor="#fff"
+                android:textSize="12sp" tools:ignore="RtlCompat" tools:text="0:30"/>
 
     </FrameLayout>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 
