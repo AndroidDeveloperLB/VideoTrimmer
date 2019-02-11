@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">VideoTrimmerSample</string>
+    <string name="permission_title_rationale">Permission needed</string>
+    <string name="permission_read_storage_rationale">Storage read permission is needed to pick files</string>
+    <string name="toast_cannot_retrieve_selected_video">Cannot retrieve selected video</string>
+    <string name="video_saved_at">Video saves at : $%1s</string>
+    <string name="pick_a_video">Select or record a a video below to try it out:</string>
+    <string name="short_seconds">sec</string>
+
+</resources>
