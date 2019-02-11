@@ -51,7 +51,11 @@ import com.lb.video_trimmer_library.view.TimeLineView
 import java.io.File
 import java.lang.ref.WeakReference
 
-abstract class BaseVideoTrimmerView @JvmOverloads constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int = 0) : FrameLayout(context, attrs, defStyleAttr) {
+abstract class BaseVideoTrimmerView @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet,
+    defStyleAttr: Int = 0
+) : FrameLayout(context, attrs, defStyleAttr) {
     private val rangeSeekBarView: RangeSeekBarView
     private val videoViewContainer: View
     private val timeInfoContainer: View
@@ -112,12 +116,12 @@ abstract class BaseVideoTrimmerView @JvmOverloads constructor(context: Context, 
             }
         })
         val gestureDetector = GestureDetector(context,
-                object : GestureDetector.SimpleOnGestureListener() {
-                    override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
-                        onClickVideoPlayPause()
-                        return true
-                    }
+            object : GestureDetector.SimpleOnGestureListener() {
+                override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
+                    onClickVideoPlayPause()
+                    return true
                 }
+            }
         )
         videoView.setOnErrorListener { _, what, extra ->
             if (videoTrimmingListener != null)
@@ -154,7 +158,7 @@ abstract class BaseVideoTrimmerView @JvmOverloads constructor(context: Context, 
     private fun setUpMargins() {
         val marge = rangeSeekBarView.thumbWidth
         val lp: MarginLayoutParams = timeLineView.layoutParams as MarginLayoutParams
-        lp.setMargins(marge, 0, marge, 0)
+        lp.setMargins(marge, lp.topMargin, marge, lp.bottomMargin)
         timeLineView.layoutParams = lp
     }
 
@@ -164,7 +168,8 @@ abstract class BaseVideoTrimmerView @JvmOverloads constructor(context: Context, 
         pauseVideo()
         val mediaMetadataRetriever = MediaMetadataRetriever()
         mediaMetadataRetriever.setDataSource(context, src)
-        val metadataKeyDuration = java.lang.Long.parseLong(mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION))
+        val metadataKeyDuration =
+            java.lang.Long.parseLong(mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION))
         if (timeVideo < MIN_TIME_FRAME) {
             if (metadataKeyDuration - endPosition > MIN_TIME_FRAME - timeVideo) {
                 endPosition += MIN_TIME_FRAME - timeVideo
@@ -176,15 +181,23 @@ abstract class BaseVideoTrimmerView @JvmOverloads constructor(context: Context, 
         if (videoTrimmingListener != null)
             videoTrimmingListener!!.onTrimStarted()
         BackgroundExecutor.execute(
-                object : BackgroundExecutor.Task(null, 0L, null) {
-                    override fun execute() {
-                        try {
-                            TrimVideoUtils.startTrim(context, src!!, dstFile!!, startPosition.toLong(), endPosition.toLong(), duration.toLong(), videoTrimmingListener!!)
-                        } catch (e: Throwable) {
-                            Thread.getDefaultUncaughtExceptionHandler().uncaughtException(Thread.currentThread(), e)
-                        }
+            object : BackgroundExecutor.Task(null, 0L, null) {
+                override fun execute() {
+                    try {
+                        TrimVideoUtils.startTrim(
+                            context,
+                            src!!,
+                            dstFile!!,
+                            startPosition.toLong(),
+                            endPosition.toLong(),
+                            duration.toLong(),
+                            videoTrimmingListener!!
+                        )
+                    } catch (e: Throwable) {
+                        Thread.getDefaultUncaughtExceptionHandler().uncaughtException(Thread.currentThread(), e)
                     }
                 }
+            }
         )
     }
 

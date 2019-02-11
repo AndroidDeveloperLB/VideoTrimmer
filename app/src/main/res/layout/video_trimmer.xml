@@ -26,23 +26,26 @@
             app:layout_constraintBottom_toTopOf="@id/timeTextContainer" app:layout_constraintEnd_toEndOf="parent"
             app:srcCompat="@android:drawable/ic_menu_crop" tools:ignore="RtlCompat"/>
 
-    <View app:layout_constraintTop_toTopOf="@id/timeTextContainer"
-          android:id="@+id/trimmingContainer" android:layout_width="match_parent" android:layout_height="0px"
-          android:background="#33ffffff" app:layout_constraintBottom_toBottomOf="parent"/>
+    <View app:layout_constraintTop_toTopOf="@id/timeTextContainer" android:background="#33ffffff"
+          android:id="@+id/backgroundView" android:layout_width="match_parent" android:layout_height="0px"
+          app:layout_constraintBottom_toBottomOf="parent"/>
 
-    <com.lb.video_trimmer_library.view.TimeLineView
-            android:id="@+id/timeLineView" android:layout_width="match_parent" android:layout_height="40dp"
-            app:layout_constraintBottom_toBottomOf="parent"/>
 
-    <com.lb.video_trimmer_library.view.RangeSeekBarView
-            app:layout_constraintTop_toTopOf="@id/timeLineView" android:id="@+id/rangeSeekBarView"
-            android:layout_width="match_parent" android:layout_height="0px"
-            app:layout_constraintBottom_toBottomOf="@id/timeLineView"
-            tools:background="#3300ffff"/>
+    <FrameLayout android:layout_width="match_parent" android:layout_height="40dp" android:id="@+id/trimmingContainer"
+                 app:layout_constraintBottom_toBottomOf="parent">
+        <com.lb.video_trimmer_library.view.TimeLineView
+                android:id="@+id/timeLineView" android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+        <com.lb.video_trimmer_library.view.RangeSeekBarView
+                app:layout_constraintTop_toTopOf="@id/timeLineView" android:id="@+id/rangeSeekBarView"
+                android:layout_width="match_parent" android:layout_height="match_parent"
+                tools:background="#3300ffff"/>
+    </FrameLayout>
 
     <FrameLayout
             android:id="@+id/timeTextContainer" android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:visibility="gone" app:layout_constraintBottom_toTopOf="@id/timeLineView"
+            android:visibility="gone" app:layout_constraintBottom_toTopOf="@id/trimmingContainer"
             tools:visibility="visible">
 
         <TextView
