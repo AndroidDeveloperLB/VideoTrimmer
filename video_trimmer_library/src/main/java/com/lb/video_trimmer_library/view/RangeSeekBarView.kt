@@ -43,7 +43,6 @@ open class RangeSeekBarView @JvmOverloads constructor(context: Context, attrs: A
 
     @Suppress("MemberVisibilityCanBePrivate")
     private val thumbTouchExtraMultiplier = initThumbTouchExtraMultiplier()
-    private var timeLineHeight: Int = initTimeLineHeight(context)
     private val thumbs = arrayOf(Thumb(ThumbType.LEFT.index), Thumb(ThumbType.RIGHT.index))
     private var listeners = HashSet<OnRangeSeekBarListener>()
     private var maxWidth: Float = 0.toFloat()
@@ -85,14 +84,6 @@ open class RangeSeekBarView @JvmOverloads constructor(context: Context, attrs: A
             context.resources.displayMetrics
         ).toInt().coerceAtLeast(1)
 
-    private fun initTimeLineHeight(context: Context) =
-        TypedValue.applyDimension(
-            TypedValue.COMPLEX_UNIT_DIP,
-            40f,
-            context.resources.displayMetrics
-        ).toInt().coerceAtLeast(1)
-
-
     fun initMaxWidth() {
         maxWidth = thumbs[ThumbType.RIGHT.index].pos - thumbs[ThumbType.LEFT.index].pos
         onSeekStop(this, ThumbType.LEFT.index, thumbs[ThumbType.LEFT.index].value)
@@ -101,11 +92,7 @@ open class RangeSeekBarView @JvmOverloads constructor(context: Context, attrs: A
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
-        val minW = paddingLeft + paddingRight + suggestedMinimumWidth
-        viewWidth = View.resolveSizeAndState(minW, widthMeasureSpec, 1)
-        val minH = paddingBottom + paddingTop + timeLineHeight
-        val viewHeight = View.resolveSizeAndState(minH, heightMeasureSpec, 1)
-        setMeasuredDimension(viewWidth, viewHeight)
+        viewWidth=measuredWidth
         pixelRangeMin = 0f
         pixelRangeMax = (viewWidth - thumbWidth).toFloat()
         if (firstRun) {
@@ -128,11 +115,11 @@ open class RangeSeekBarView @JvmOverloads constructor(context: Context, attrs: A
             if (thumb.index == ThumbType.LEFT.index) {
                 val x = thumb.pos + paddingLeft
                 if (x > pixelRangeMin)
-                    canvas.drawRect(thumbWidth.toFloat(), 0f, (x + thumbWidth), timeLineHeight.toFloat(), shadowPaint)
+                    canvas.drawRect(thumbWidth.toFloat(), 0f, (x + thumbWidth), height.toFloat(), shadowPaint)
             } else {
                 val x = thumb.pos - paddingRight
                 if (x < pixelRangeMax)
-                    canvas.drawRect(x, 0f, (viewWidth - thumbWidth).toFloat(), timeLineHeight.toFloat(), shadowPaint)
+                    canvas.drawRect(x, 0f, (viewWidth - thumbWidth).toFloat(), height.toFloat(), shadowPaint)
             }
         }
         //draw stroke around selected range
@@ -140,20 +127,20 @@ open class RangeSeekBarView @JvmOverloads constructor(context: Context, attrs: A
             (thumbs[ThumbType.LEFT.index].pos + paddingLeft + thumbWidth),
             0f,
             thumbs[ThumbType.RIGHT.index].pos - paddingRight,
-            timeLineHeight.toFloat(),
+            height.toFloat(),
             strokePaint
         )
         //draw edges
         val circleRadius = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 6f, context.resources.displayMetrics)
         canvas.drawCircle(
             (thumbs[ThumbType.LEFT.index].pos + paddingLeft + thumbWidth),
-            timeLineHeight.toFloat() / 2f,
+            height.toFloat() / 2f,
             circleRadius,
             edgePaint
         )
         canvas.drawCircle(
             thumbs[ThumbType.RIGHT.index].pos - paddingRight,
-            timeLineHeight.toFloat() / 2f,
+            height.toFloat() / 2f,
             circleRadius,
             edgePaint
         )
