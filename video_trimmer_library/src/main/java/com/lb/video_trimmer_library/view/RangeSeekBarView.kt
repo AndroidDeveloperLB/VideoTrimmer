@@ -35,7 +35,8 @@ import com.lb.video_trimmer_library.interfaces.OnRangeSeekBarListener
 import kotlin.math.absoluteValue
 
 @Suppress("LeakingThis")
-open class RangeSeekBarView @JvmOverloads constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int = 0) : View(context, attrs, defStyleAttr) {
+open class RangeSeekBarView @JvmOverloads constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int = 0) :
+    View(context, attrs, defStyleAttr) {
     enum class ThumbType(val index: kotlin.Int) {
         LEFT(0), RIGHT(1)
     }
@@ -65,7 +66,8 @@ open class RangeSeekBarView @JvmOverloads constructor(context: Context, attrs: A
         shadowPaint.color = initShadowColor()
         strokePaint.isAntiAlias = true
         strokePaint.style = Paint.Style.STROKE
-        strokePaint.strokeWidth = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2f, context.resources.displayMetrics)
+        strokePaint.strokeWidth =
+            TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2f, context.resources.displayMetrics)
         strokePaint.color = 0xffffffff.toInt()
         edgePaint.isAntiAlias = true
         edgePaint.color = 0xffffffff.toInt()
@@ -77,10 +79,18 @@ open class RangeSeekBarView @JvmOverloads constructor(context: Context, attrs: A
     open fun initThumbTouchExtraMultiplier() = 1.0f
 
     open fun initThumbWidth(context: Context) =
-            TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 27f, context.resources.displayMetrics).toInt().coerceAtLeast(1)
+        TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            27f,
+            context.resources.displayMetrics
+        ).toInt().coerceAtLeast(1)
 
     private fun initTimeLineHeight(context: Context) =
-            TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 40f, context.resources.displayMetrics).toInt().coerceAtLeast(1)
+        TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            40f,
+            context.resources.displayMetrics
+        ).toInt().coerceAtLeast(1)
 
 
     fun initMaxWidth() {
@@ -126,12 +136,28 @@ open class RangeSeekBarView @JvmOverloads constructor(context: Context, attrs: A
             }
         }
         //draw stroke around selected range
-        canvas.drawRect((thumbs[ThumbType.LEFT.index].pos + paddingLeft + thumbWidth), 0f, thumbs[ThumbType.RIGHT.index].pos - paddingRight, timeLineHeight.toFloat(), strokePaint)
+        canvas.drawRect(
+            (thumbs[ThumbType.LEFT.index].pos + paddingLeft + thumbWidth),
+            0f,
+            thumbs[ThumbType.RIGHT.index].pos - paddingRight,
+            timeLineHeight.toFloat(),
+            strokePaint
+        )
 
         //draw edges
         val circleRadius = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 6f, context.resources.displayMetrics)
-        canvas.drawCircle((thumbs[ThumbType.LEFT.index].pos + paddingLeft + thumbWidth), timeLineHeight.toFloat() / 2f, circleRadius, edgePaint)
-        canvas.drawCircle(thumbs[ThumbType.RIGHT.index].pos - paddingRight, timeLineHeight.toFloat() / 2f, circleRadius, edgePaint)
+        canvas.drawCircle(
+            (thumbs[ThumbType.LEFT.index].pos + paddingLeft + thumbWidth),
+            timeLineHeight.toFloat() / 2f,
+            circleRadius,
+            edgePaint
+        )
+        canvas.drawCircle(
+            thumbs[ThumbType.RIGHT.index].pos - paddingRight,
+            timeLineHeight.toFloat() / 2f,
+            circleRadius,
+            edgePaint
+        )
     }
 
     override fun onTouchEvent(ev: MotionEvent): Boolean {
@@ -159,7 +185,8 @@ open class RangeSeekBarView @JvmOverloads constructor(context: Context, attrs: A
             }
             MotionEvent.ACTION_MOVE -> {
                 mThumb = thumbs[currentThumb]
-                mThumb2 = thumbs[if (currentThumb == ThumbType.LEFT.index) ThumbType.RIGHT.index else ThumbType.LEFT.index]
+                mThumb2 =
+                    thumbs[if (currentThumb == ThumbType.LEFT.index) ThumbType.RIGHT.index else ThumbType.LEFT.index]
                 // Calculate the distance moved
                 val dx = coordinate - mThumb.lastTouchX
                 val newX = mThumb.pos + dx
@@ -270,15 +297,19 @@ open class RangeSeekBarView @JvmOverloads constructor(context: Context, attrs: A
             return -1
         var closest = -1
         var minDistanceFound = Float.MAX_VALUE
+        val x = xPos - thumbWidth//+ paddingLeft
+//        Log.d("AppLog", "xPos:$xPos -> x: $x")
         for (thumb in thumbs) {
+            val thumbPos = if (thumb.index == ThumbType.LEFT.index) thumb.pos else thumb.pos - thumbWidth
+//            Log.d("AppLog", "thumb ${thumb.index} pos: $thumbPos")
             // Find thumb closest to x coordinate
-            val xMin = thumb.pos - thumbWidth * thumbTouchExtraMultiplier
-            val xMax = thumb.pos + thumbWidth * (1.0f + thumbTouchExtraMultiplier)
-            if (xPos in xMin..xMax) {
-                val xMid = (thumb.pos + thumbWidth) / 2
-                val distance = (xMid - xPos).absoluteValue
+            val xMin = thumbPos - thumbWidth * thumbTouchExtraMultiplier
+            val xMax = thumbPos + thumbWidth * thumbTouchExtraMultiplier
+            if (x in xMin..xMax) {
+                val distance = (thumbPos - x).absoluteValue
                 if (distance < minDistanceFound) {
                     closest = thumb.index
+//                    Log.d("AppLog", "x: $x distance: $distance selectedThumb:$closest")
                     minDistanceFound = distance
                 }
             }
