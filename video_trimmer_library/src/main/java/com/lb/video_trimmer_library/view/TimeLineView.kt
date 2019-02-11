@@ -34,7 +34,6 @@ import android.net.Uri
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import android.util.AttributeSet
-import android.util.LongSparseArray
 import android.view.View
 import com.lb.video_trimmer_library.utils.BackgroundExecutor
 import com.lb.video_trimmer_library.utils.UiThreadExecutor
@@ -43,7 +42,8 @@ open class TimeLineView @JvmOverloads constructor(context: Context, attrs: Attri
     View(context, attrs, defStyleAttr) {
     private var videoUri: Uri? = null
     @Suppress("LeakingThis")
-    private var bitmapList: LongSparseArray<Bitmap>? = null
+//    private var bitmapList: LongSparseArray<Bitmap>? = null
+    private val bitmapList = ArrayList<Bitmap?>()
 
     override fun onSizeChanged(w: Int, h: Int, oldW: Int, oldH: Int) {
         super.onSizeChanged(w, h, oldW, oldH)
@@ -52,25 +52,24 @@ open class TimeLineView @JvmOverloads constructor(context: Context, attrs: Attri
     }
 
     private fun getBitmap(viewWidth: Int, viewHeight: Int) {
-//        if (isInEditMode)
-//            return
         // Set thumbnail properties (Thumbs are squares)
+        @Suppress("UnnecessaryVariable")
         val thumbSize = viewHeight
         val numThumbs = Math.ceil((viewWidth.toFloat() / thumbSize).toDouble()).toInt()
+        bitmapList.clear()
         if (isInEditMode) {
             val bitmap = ThumbnailUtils.extractThumbnail(
                 BitmapFactory.decodeResource(resources, android.R.drawable.sym_def_app_icon)!!, thumbSize, thumbSize
             )
-            bitmapList = LongSparseArray()
             for (i in 0 until numThumbs)
-                bitmapList!!.put(i.toLong(), bitmap)
+                bitmapList.add(bitmap)
             return
         }
         BackgroundExecutor.cancelAll("", true)
         BackgroundExecutor.execute(object : BackgroundExecutor.Task("", 0L, "") {
             override fun execute() {
                 try {
-                    val thumbnailList = LongSparseArray<Bitmap>()
+                    val thumbnailList = ArrayList<Bitmap?>()
                     val mediaMetadataRetriever = MediaMetadataRetriever()
                     mediaMetadataRetriever.setDataSource(context, videoUri)
                     // Retrieve media data
@@ -88,7 +87,7 @@ open class TimeLineView @JvmOverloads constructor(context: Context, attrs: Attri
                         )
                         if (bitmap != null)
                             bitmap = ThumbnailUtils.extractThumbnail(bitmap, thumbSize, thumbSize)
-                        thumbnailList.put(i.toLong(), bitmap)
+                        thumbnailList.add(bitmap)
                     }
                     mediaMetadataRetriever.release()
                     returnBitmaps(thumbnailList)
@@ -101,9 +100,10 @@ open class TimeLineView @JvmOverloads constructor(context: Context, attrs: Attri
         )
     }
 
-    private fun returnBitmaps(thumbnailList: LongSparseArray<Bitmap>) {
+    private fun returnBitmaps(thumbnailList: ArrayList<Bitmap?>) {
         UiThreadExecutor.runTask("", Runnable {
-            bitmapList = thumbnailList
+            bitmapList.clear()
+            bitmapList.addAll(thumbnailList)
             invalidate()
         }, 0L)
     }
@@ -111,16 +111,13 @@ open class TimeLineView @JvmOverloads constructor(context: Context, attrs: Attri
     @SuppressLint("DrawAllocation")
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        if (bitmapList != null) {
-            canvas.save()
-            var x = 0
-            for (i in 0L until bitmapList!!.size()) {
-                val bitmap = bitmapList!!.get(i)
-                if (bitmap != null) {
-                    canvas.drawBitmap(bitmap, x.toFloat(), 0f, null)
-                    x += bitmap.width
-                }
-            }
+        canvas.save()
+        var x = 0
+        val thumbSize = height
+        for (bitmap in bitmapList) {
+            if (bitmap != null)
+                canvas.drawBitmap(bitmap, x.toFloat(), 0f, null)
+            x += thumbSize
         }
     }
 
