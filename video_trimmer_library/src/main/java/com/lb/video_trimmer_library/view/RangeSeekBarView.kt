@@ -56,6 +56,7 @@ open class RangeSeekBarView @JvmOverloads constructor(context: Context, attrs: A
     private val strokePaint = Paint()
     private val edgePaint = Paint()
     private var currentThumb = ThumbType.LEFT.index
+    private var minWidth: Float = 1.toFloat()
 
 
     init {
