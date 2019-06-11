@@ -216,6 +216,12 @@ open class RangeSeekBarView @JvmOverloads constructor(context: Context, attrs: A
                 thumbRight.pos = thumbLeft.pos + dx + maxWidth
                 setThumbPos(ThumbType.RIGHT.index, thumbRight.pos)
             }
+            val newLeftThumbPos = thumbLeft.pos + dx
+            if (thumbRight.pos - (newLeftThumbPos) < minWidth )
+            {
+                val closestPossibleLeftThumbPos = thumbRight.pos - minWidth
+                setThumbPos(ThumbType.LEFT.index, closestPossibleLeftThumbPos)
+            }
         } else if (!isLeftMove && dx > 0) {
             if (thumbRight.pos + dx - thumbLeft.pos > maxWidth) {
                 thumbLeft.pos = thumbRight.pos + dx - maxWidth
