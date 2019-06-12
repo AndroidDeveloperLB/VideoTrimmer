@@ -65,6 +65,7 @@ abstract class BaseVideoTrimmerView @JvmOverloads constructor(
     private var src: Uri? = null
     private var dstFile: File? = null
     private var maxDurationInMs: Int = 0
+    private var minDurationInMs: Int = 0
     private var listeners = ArrayList<OnProgressVideoListener>()
     private var videoTrimmingListener: VideoTrimmingListener? = null
     private var duration = 0
@@ -258,6 +259,8 @@ abstract class BaseVideoTrimmerView @JvmOverloads constructor(
         videoView.seekTo(startPosition)
         timeVideo = duration
         rangeSeekBarView.initMaxWidth()
+        val theMinWidth = minDurationInMs *100f / duration
+        rangeSeekBarView.initMinWidth( theMinWidth )
     }
 
     private fun onSeekThumbs(index: Int, value: Float) {
@@ -353,6 +356,10 @@ abstract class BaseVideoTrimmerView @JvmOverloads constructor(
      */
     fun setMaxDurationInMs(maxDurationInMs: Int) {
         this.maxDurationInMs = maxDurationInMs
+    }
+
+    fun setMinDurationInMs(minDurationInMs: Int) {
+        this.minDurationInMs = minDurationInMs
     }
 
     /**
