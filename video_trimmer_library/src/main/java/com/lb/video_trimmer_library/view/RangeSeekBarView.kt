@@ -46,6 +46,7 @@ open class RangeSeekBarView @JvmOverloads constructor(context: Context, attrs: A
     private val thumbs = arrayOf(Thumb(ThumbType.LEFT.index), Thumb(ThumbType.RIGHT.index))
     private var listeners = HashSet<OnRangeSeekBarListener>()
     private var maxWidth: Float = 0.toFloat()
+    private var minWidth: Float = 0.toFloat()
     val thumbWidth = initThumbWidth(context)
     private var viewWidth: Int = 0
     private var pixelRangeMin: Float = 0.toFloat()
@@ -56,7 +57,6 @@ open class RangeSeekBarView @JvmOverloads constructor(context: Context, attrs: A
     private val strokePaint = Paint()
     private val edgePaint = Paint()
     private var currentThumb = ThumbType.LEFT.index
-    private var minWidth: Float = 1.toFloat()
 
 
     init {
@@ -89,6 +89,10 @@ open class RangeSeekBarView @JvmOverloads constructor(context: Context, attrs: A
         maxWidth = thumbs[ThumbType.RIGHT.index].pos - thumbs[ThumbType.LEFT.index].pos
         onSeekStop(this, ThumbType.LEFT.index, thumbs[ThumbType.LEFT.index].value)
         onSeekStop(this, ThumbType.RIGHT.index, thumbs[ThumbType.RIGHT.index].value)
+    }
+
+    fun initMinWidth(aMinWidth: Float) {
+        minWidth = aMinWidth * pixelRangeMax / 100
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -179,7 +183,7 @@ open class RangeSeekBarView @JvmOverloads constructor(context: Context, attrs: A
                 val newX = mThumb.pos + dx
                 when {
                     currentThumb == 0 -> when {
-                        newX + thumbWidth >= mThumb2.pos -> mThumb.pos = mThumb2.pos - thumbWidth
+                        newX + thumbWidth + minWidth >= mThumb2.pos -> mThumb.pos = mThumb2.pos - thumbWidth - minWidth
                         newX <= pixelRangeMin -> mThumb.pos = pixelRangeMin
                         else -> {
                             //Check if thumb is not out of max width
@@ -190,7 +194,7 @@ open class RangeSeekBarView @JvmOverloads constructor(context: Context, attrs: A
                             mThumb.lastTouchX = coordinate
                         }
                     }
-                    newX <= mThumb2.pos + thumbWidth -> mThumb.pos = mThumb2.pos + thumbWidth
+                    newX <= mThumb2.pos + thumbWidth + minWidth -> mThumb.pos = mThumb2.pos + thumbWidth + minWidth
                     newX >= pixelRangeMax -> mThumb.pos = pixelRangeMax
                     else -> {
                         //Check if thumb is not out of max width
@@ -215,12 +219,6 @@ open class RangeSeekBarView @JvmOverloads constructor(context: Context, attrs: A
             if (thumbRight.pos - (thumbLeft.pos + dx) > maxWidth) {
                 thumbRight.pos = thumbLeft.pos + dx + maxWidth
                 setThumbPos(ThumbType.RIGHT.index, thumbRight.pos)
-            }
-            val newLeftThumbPos = thumbLeft.pos + dx
-            if (thumbRight.pos - (newLeftThumbPos) < minWidth )
-            {
-                val closestPossibleLeftThumbPos = thumbRight.pos - minWidth
-                setThumbPos(ThumbType.LEFT.index, closestPossibleLeftThumbPos)
             }
         } else if (!isLeftMove && dx > 0) {
             if (thumbRight.pos + dx - thumbLeft.pos > maxWidth) {
