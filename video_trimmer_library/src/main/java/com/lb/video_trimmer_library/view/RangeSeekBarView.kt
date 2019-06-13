@@ -85,8 +85,8 @@ open class RangeSeekBarView @JvmOverloads constructor(context: Context, attrs: A
             context.resources.displayMetrics
         ).toInt().coerceAtLeast(1)
 
-    fun initMaxWidth() {
-        maxWidth = thumbs[ThumbType.RIGHT.index].pos - thumbs[ThumbType.LEFT.index].pos
+    fun initMaxWidth(aMaxWidth: Float) {
+        maxWidth = aMaxWidth * pixelRangeMax / 100
         onSeekStop(this, ThumbType.LEFT.index, thumbs[ThumbType.LEFT.index].value)
         onSeekStop(this, ThumbType.RIGHT.index, thumbs[ThumbType.RIGHT.index].value)
     }

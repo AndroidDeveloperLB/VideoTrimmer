@@ -66,6 +66,7 @@ abstract class BaseVideoTrimmerView @JvmOverloads constructor(
     private var dstFile: File? = null
     private var maxDurationInMs: Int = 0
     private var minDurationInMs: Int = 0
+    private var defaultSelectedDurationInMs: Int? = null
     private var listeners = ArrayList<OnProgressVideoListener>()
     private var videoTrimmingListener: VideoTrimmingListener? = null
     private var duration = 0
@@ -246,21 +247,28 @@ abstract class BaseVideoTrimmerView @JvmOverloads constructor(
     }
 
     private fun setSeekBarPosition() {
-        if (duration >= maxDurationInMs) {
-            startPosition = duration / 2 - maxDurationInMs / 2
-            endPosition = duration / 2 + maxDurationInMs / 2
-            rangeSeekBarView.setThumbValue(0, startPosition * 100f / duration)
-            rangeSeekBarView.setThumbValue(1, endPosition * 100f / duration)
+        if ( defaultSelectedDurationInMs == null ) {
+            if ( duration <= maxDurationInMs ) {
+                endPosition = duration
+            } else {
+                endPosition = maxDurationInMs
+            }
         } else {
-            startPosition = 0
-            endPosition = duration
+            if ( duration <= defaultSelectedDurationInMs as Int) {
+                endPosition = duration
+            } else {
+                endPosition = defaultSelectedDurationInMs as Int
+            }
         }
+        rangeSeekBarView.setThumbValue(0, startPosition * 100f / duration)
+        rangeSeekBarView.setThumbValue(1, endPosition * 100f / duration)
         setProgressBarPosition(startPosition)
         videoView.seekTo(startPosition)
         timeVideo = duration
-        rangeSeekBarView.initMaxWidth()
+        val theMaxWidth = maxDurationInMs *100f / duration
         val theMinWidth = minDurationInMs *100f / duration
-        rangeSeekBarView.initMinWidth( theMinWidth )
+        rangeSeekBarView.initMaxWidth(theMaxWidth)
+        rangeSeekBarView.initMinWidth(theMinWidth)
     }
 
     private fun onSeekThumbs(index: Int, value: Float) {
@@ -358,8 +366,20 @@ abstract class BaseVideoTrimmerView @JvmOverloads constructor(
         this.maxDurationInMs = maxDurationInMs
     }
 
+    /**
+     * Set the minimum duration of the trimmed video.
+     * The trimmer interface wont allow the user to set duration shorter than minDuration
+     */
     fun setMinDurationInMs(minDurationInMs: Int) {
         this.minDurationInMs = minDurationInMs
+    }
+
+    /**
+     * Set the maximum duration of the trimmed video for free users.
+     * The trimmer interface will initialize with a maximum of this duration selected but will allow selecting more.
+     */
+    fun setDefaultSelectedDurationInMs(defaultSelectedDurationInMs: Int) {
+        this.defaultSelectedDurationInMs = defaultSelectedDurationInMs
     }
 
     /**
