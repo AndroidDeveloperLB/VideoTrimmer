@@ -42,8 +42,10 @@ class VideoTrimmerView @JvmOverloads constructor(context: Context, attrs: Attrib
     override fun getRangeSeekBarView(): RangeSeekBarView = rangeSeekBarView
 
     override fun onRangeUpdated(startTimeInMs: Int, endTimeInMs: Int) {
-        val seconds = context.getString(R.string.short_seconds)
-        trimTimeRangeTextView.text = "${stringForTime(startTimeInMs)} $seconds - ${stringForTime(endTimeInMs)} $seconds"
+        val seconds = "sec"
+        val duration = Math.ceil((endTimeInMs - startTimeInMs) / 1000.0)
+        val durationText = "$duration  $seconds"
+        trimTimeRangeTextView.text = durationText
     }
 
     override fun onVideoPlaybackReachingTime(timeInMs: Int) {
