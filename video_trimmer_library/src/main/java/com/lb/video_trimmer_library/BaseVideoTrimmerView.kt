@@ -247,29 +247,31 @@ abstract class BaseVideoTrimmerView @JvmOverloads constructor(
     }
 
     private fun setSeekBarPosition() {
-        if ( defaultSelectedDurationInMs == null ) {
-            if ( duration <= maxDurationInMs ) {
+        if (defaultSelectedDurationInMs == null) {
+            if (duration <= maxDurationInMs) {
                 endPosition = duration
             } else {
                 endPosition = maxDurationInMs
             }
         } else {
-            if ( duration <= defaultSelectedDurationInMs as Int) {
+            if (duration <= defaultSelectedDurationInMs as Int) {
                 endPosition = duration
             } else {
                 endPosition = defaultSelectedDurationInMs as Int
             }
         }
-        rangeSeekBarView.setThumbValue(0, startPosition * 100f / duration)
-        rangeSeekBarView.setThumbValue(1, endPosition * 100f / duration)
+        rangeSeekBarView.setThumbValue(0, getValueForTimeInMilliseconds(startPosition))
+        rangeSeekBarView.setThumbValue(1, getValueForTimeInMilliseconds(endPosition))
         setProgressBarPosition(startPosition)
         videoView.seekTo(startPosition)
         timeVideo = duration
-        val theMaxWidth = maxDurationInMs *100f / duration
-        val theMinWidth = minDurationInMs *100f / duration
+        val theMaxWidth = getValueForTimeInMilliseconds(maxDurationInMs)
+        val theMinWidth = getValueForTimeInMilliseconds(minDurationInMs)
         rangeSeekBarView.initMaxWidth(theMaxWidth)
         rangeSeekBarView.initMinWidth(theMinWidth)
     }
+
+    private fun getValueForTimeInMilliseconds(aTimeInMilliseconds: Int) = aTimeInMilliseconds * 100f / duration
 
     private fun onSeekThumbs(index: Int, value: Float) {
         when (index) {
@@ -301,9 +303,9 @@ abstract class BaseVideoTrimmerView @JvmOverloads constructor(
         val position = videoView.currentPosition
         if (all)
             for (item in listeners)
-                item.updateProgress(position, duration, position * 100f / duration)
+                item.updateProgress(position, duration, getValueForTimeInMilliseconds(position))
         else
-            listeners[1].updateProgress(position, duration, position * 100f / duration)
+            listeners[1].updateProgress(position, duration, getValueForTimeInMilliseconds(position))
     }
 
     private fun updateVideoProgress(time: Int) {
