@@ -247,19 +247,7 @@ abstract class BaseVideoTrimmerView @JvmOverloads constructor(
     }
 
     private fun setSeekBarPosition() {
-        if (defaultSelectedDurationInMs == null) {
-            if (duration <= maxDurationInMs) {
-                endPosition = duration
-            } else {
-                endPosition = maxDurationInMs
-            }
-        } else {
-            if (duration <= defaultSelectedDurationInMs as Int) {
-                endPosition = duration
-            } else {
-                endPosition = defaultSelectedDurationInMs as Int
-            }
-        }
+        endPosition = calculateEndPositionWithMinAndMax()
         rangeSeekBarView.setThumbValue(0, getValueForTimeInMilliseconds(startPosition))
         rangeSeekBarView.setThumbValue(1, getValueForTimeInMilliseconds(endPosition))
         setProgressBarPosition(startPosition)
@@ -269,6 +257,25 @@ abstract class BaseVideoTrimmerView @JvmOverloads constructor(
         val theMinWidth = getValueForTimeInMilliseconds(minDurationInMs)
         rangeSeekBarView.initMaxWidth(theMaxWidth)
         rangeSeekBarView.initMinWidth(theMinWidth)
+    }
+
+    private fun calculateEndPositionWithMinAndMax(): Int {
+        var theEndPosition = 0
+        if (defaultSelectedDurationInMs == null) {
+            if (duration <= maxDurationInMs) {
+                theEndPosition = duration
+            } else {
+                theEndPosition = maxDurationInMs
+            }
+        } else {
+            if (duration <= defaultSelectedDurationInMs as Int) {
+                theEndPosition = duration
+            } else {
+                theEndPosition = defaultSelectedDurationInMs as Int
+            }
+        }
+
+        return theEndPosition
     }
 
     private fun getValueForTimeInMilliseconds(aTimeInMilliseconds: Int) = aTimeInMilliseconds * 100f / duration
