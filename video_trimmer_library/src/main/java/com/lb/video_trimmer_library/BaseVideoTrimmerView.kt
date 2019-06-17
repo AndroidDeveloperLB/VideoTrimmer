@@ -66,7 +66,7 @@ abstract class BaseVideoTrimmerView @JvmOverloads constructor(
     private var dstFile: File? = null
     private var maxDurationInMs: Int = 0
     private var minDurationInMs: Int = 0
-    private var defaultSelectedDurationInMs: Int? = null
+    protected var defaultSelectedDurationInMs: Int? = null
     private var listeners = ArrayList<OnProgressVideoListener>()
     private var videoTrimmingListener: VideoTrimmingListener? = null
     private var duration = 0
@@ -296,7 +296,7 @@ abstract class BaseVideoTrimmerView @JvmOverloads constructor(
         timeVideo = endPosition - startPosition
     }
 
-    private fun onStopSeekThumbs() {
+    open fun onStopSeekThumbs() {
         messageHandler.removeMessages(SHOW_PROGRESS)
         pauseVideo()
     }

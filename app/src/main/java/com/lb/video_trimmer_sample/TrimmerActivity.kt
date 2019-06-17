@@ -26,6 +26,7 @@ class TrimmerActivity : AppCompatActivity(), VideoTrimmingListener {
 //        progressDialog!!.setCancelable(false)
 //        progressDialog!!.setMessage(getString(R.string.trimming_progress))
         videoTrimmerView.setMaxDurationInMs(10 * 1000)
+        videoTrimmerView.setDefaultSelectedDurationInMs(3 * 1000)
         videoTrimmerView.setMinDurationInMs(1 * 1000)
         videoTrimmerView.setOnK4LVideoListener(this)
         val parentFolder = getExternalFilesDir(null)!!

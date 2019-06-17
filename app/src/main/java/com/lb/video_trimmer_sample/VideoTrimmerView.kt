@@ -3,6 +3,7 @@ package com.lb.video_trimmer_sample
 import android.content.Context
 import android.text.format.Formatter
 import android.util.AttributeSet
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.VideoView
@@ -11,7 +12,8 @@ import com.lb.video_trimmer_library.view.RangeSeekBarView
 import com.lb.video_trimmer_library.view.TimeLineView
 import kotlinx.android.synthetic.main.video_trimmer.view.*
 
-class VideoTrimmerView @JvmOverloads constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int = 0) : BaseVideoTrimmerView(context, attrs, defStyleAttr) {
+class VideoTrimmerView @JvmOverloads constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int = 0) :
+    BaseVideoTrimmerView(context, attrs, defStyleAttr) {
     private fun stringForTime(timeMs: Int): String {
         val totalSeconds = timeMs / 1000
         val seconds = totalSeconds % 60
@@ -45,7 +47,18 @@ class VideoTrimmerView @JvmOverloads constructor(context: Context, attrs: Attrib
         val seconds = "sec"
         val duration = Math.ceil((endTimeInMs - startTimeInMs) / 1000.0)
         val durationText = "$duration  $seconds"
+
+        if( this.defaultSelectedDurationInMs != null && (endTimeInMs - startTimeInMs) > this.defaultSelectedDurationInMs!!)
+        {
+            Log.d("video trimmer view", "duration is greater than default" )
+        }
+
         trimTimeRangeTextView.text = durationText
+    }
+
+    override fun onStopSeekThumbs() {
+        super.onStopSeekThumbs()
+        Log.d("video trimmer view", "onStopSeekThumbs" )
     }
 
     override fun onVideoPlaybackReachingTime(timeInMs: Int) {
@@ -56,4 +69,5 @@ class VideoTrimmerView @JvmOverloads constructor(context: Context, attrs: Attrib
     override fun onGotVideoFileSize(videoFileSize: Long) {
         videoFileSizeTextView.text = Formatter.formatShortFileSize(context, videoFileSize)
     }
+
 }
