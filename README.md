@@ -2,6 +2,8 @@ Warning: this is not maintained anymore.
 It's a fork of another library that I've found:
 https://github.com/titansgroup/k4l-video-trimmer
 
+You are free to send pull requests if you think they are good, though.
+
 ----
 
 [![Release](https://img.shields.io/github/release/AndroidDeveloperLB/VideoTrimmer.svg?style=flat)](https://jitpack.io/#AndroidDeveloperLB/VideoTrimmer)
